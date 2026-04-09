@@ -18,7 +18,7 @@ This repository showcases real-world data analysis projects using Python, SQL, a
 - 📌 Analyzed sales data to identify trends and growth opportunities  
 - 📈 Found top-performing categories and revenue drivers  
 
-👉 [View Project]()
+👉 [View Project](https://github.com/palavinash16/DATA-ANALYSIS-PROJECT/tree/main/E-COMMERCE%20SALES%20ANALYSIS)
 
 ---
 
