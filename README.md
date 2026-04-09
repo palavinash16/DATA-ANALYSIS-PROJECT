@@ -47,11 +47,6 @@ This project analyzes e-commerce sales data to uncover trends, customer behavior
 * Improve retention strategies for churn segments
 * Optimize pricing strategy
 
-## 📎 How to Run
-
-```bash
-pip install -r requirements.txt
-```
 
 ## 👤 Author
 
