@@ -26,7 +26,7 @@ This repository showcases real-world data analysis projects using Python, SQL, a
 - 📌 Predicted customer churn using data insights  
 - 📉 Identified key factors affecting retention  
 
-👉 [View Project](./Churn-Analysis)
+👉 [View Project](https://github.com/palavinash16/DATA-ANALYSIS-PROJECT/tree/main/CHURN%20ANALYSIS%20)
 
 ---
 
