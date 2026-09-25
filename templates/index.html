@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Sales Analytics & ML Intelligence Suite</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ApexCharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dark-theme">
+    <!-- Sidebar / Navigation -->
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-chart-line-up brand-icon"></i>
+                <div>
+                    <h2>ApexSales<span class="accent-text">.AI</span></h2>
+                    <p class="subtitle">E-Commerce ML Suite</p>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-target="tab-overview">
+                    <i class="fa-solid fa-grid-2"></i> Executive Overview
+                </button>
+                <button class="nav-btn" data-target="tab-forecasting">
+                    <i class="fa-solid fa-chart-trend-up"></i> Sales Forecasting
+                </button>
+                <button class="nav-btn" data-target="tab-rfm">
+                    <i class="fa-solid fa-users-gear"></i> RFM Segmentation
+                </button>
+                <button class="nav-btn" data-target="tab-risk">
+                    <i class="fa-solid fa-shield-triangle-exclamation"></i> Order Loss Predictor
+                </button>
+                <button class="nav-btn" data-target="tab-sql">
+                    <i class="fa-solid fa-database"></i> SQL & Insights
+                </button>
+            </nav>
+
+            <div class="system-status">
+                <div class="status-indicator online"></div>
+                <div>
+                    <span class="status-title">ML Models Active</span>
+                    <span class="status-desc">XGBoost & GradientBoosting</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="top-header">
+                <div>
+                    <h1 class="header-title">E-Commerce Analytics & Machine Learning Dashboard</h1>
+                    <p class="header-desc">Superstore Sales Intelligence, Time-Series Forecasting & Loss Risk ML Engine</p>
+                </div>
+                <div class="header-badge">
+                    <i class="fa-solid fa-bolt"></i> Live Dataset: 9,994 Orders
+                </div>
+            </header>
+
+            <!-- TAB 1: EXECUTIVE OVERVIEW -->
+            <section id="tab-overview" class="tab-page active">
+                <div class="kpi-grid">
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon icon-blue"><i class="fa-solid fa-sack-dollar"></i></div>
+                        <div class="kpi-details">
+                            <span class="kpi-label">Total Revenue</span>
+                            <h2 class="kpi-value" id="kpi-sales">$0</h2>
+                            <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> 9,994 Total Orders</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon icon-green"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="kpi-details">
+                            <span class="kpi-label">Net Profit</span>
+                            <h2 class="kpi-value" id="kpi-profit">$0</h2>
+                            <span class="kpi-trend positive" id="kpi-margin">Margin: 0%</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon icon-purple"><i class="fa-solid fa-user-group"></i></div>
+                        <div class="kpi-details">
+                            <span class="kpi-label">Active Customers</span>
+                            <h2 class="kpi-value" id="kpi-customers">0</h2>
+                            <span class="kpi-trend neutral">793 Customer Profiles</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-icon icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="kpi-details">
+                            <span class="kpi-label">Loss-Making Orders</span>
+                            <h2 class="kpi-value" id="kpi-loss-pct">0%</h2>
+                            <span class="kpi-trend negative">Target for ML Prevention</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overview Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-card glass-card flex-2">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-area"></i> Revenue & Profit by Product Category</h3>
+                        </div>
+                        <div id="chart-category-eda" class="chart-container"></div>
+                    </div>
+
+                    <div class="chart-card glass-card flex-1">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-pie"></i> Regional Revenue Distribution</h3>
+                        </div>
+                        <div id="chart-region-pie" class="chart-container"></div>
+                    </div>
+                </div>
+
+                <!-- Subcategory Performance -->
+                <div class="chart-card glass-card full-width mt-20">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-chart-bar"></i> Top 10 Sub-Categories (Sales vs Profitability)</h3>
+                    </div>
+                    <div id="chart-subcat-bar" class="chart-container-large"></div>
+                </div>
+            </section>
+
+            <!-- TAB 2: SALES FORECASTING -->
+            <section id="tab-forecasting" class="tab-page">
+                <div class="section-intro glass-card mb-20">
+                    <div class="intro-badge">Regression Model Suite</div>
+                    <h2>📈 Time-Series Weekly Sales Forecasting</h2>
+                    <p>Comparing Linear Regression, Random Forest, Gradient Boosting, and XGBoost models trained on 4 years of historical continuous weekly order streams.</p>
+                </div>
+
+                <div class="chart-card glass-card mb-20">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-arrow-trend-up"></i> Forecasted vs Actual Weekly Sales</h3>
+                        <div class="model-selector">
+                            <label>Selected Model: </label>
+                            <select id="forecasting-model-select">
+                                <option value="Gradient Boosting">Gradient Boosting (Best R² = 0.4319)</option>
+                                <option value="Linear Regression">Linear Regression</option>
+                                <option value="Random Forest">Random Forest</option>
+                                <option value="XGBoost">XGBoost Regressor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="chart-forecasting" class="chart-container-large"></div>
+                </div>
+
+                <div class="table-card glass-card">
+                    <h3><i class="fa-solid fa-list-check"></i> Forecasting Model Leaderboard</h3>
+                    <table class="data-table mt-10">
+                        <thead>
+                            <tr>
+                                <th>Model Name</th>
+                                <th>MAE ($)</th>
+                                <th>RMSE ($)</th>
+                                <th>R² Score</th>
+                                <th>Evaluation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metrics-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TAB 3: RFM SEGMENTATION -->
+            <section id="tab-rfm" class="tab-page">
+                <div class="section-intro glass-card mb-20">
+                    <div class="intro-badge">Unsupervised Learning</div>
+                    <h2>👥 RFM Customer Segmentation (K-Means Clustering)</h2>
+                    <p>Categorizing 793 customers based on Recency (last order days), Frequency (order count), and Monetary (total spend) metrics into 3 distinct business personas.</p>
+                </div>
+
+                <div class="personas-grid mb-20" id="personas-cards-container">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="chart-card glass-card">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-circle-nodes"></i> Customer Distribution Scatter (Recency vs Monetary Spend)</h3>
+                    </div>
+                    <div id="chart-rfm-scatter" class="chart-container-large"></div>
+                </div>
+            </section>
+
+            <!-- TAB 4: ORDER LOSS RISK PREDICTOR -->
+            <section id="tab-risk" class="tab-page">
+                <div class="section-intro glass-card mb-20">
+                    <div class="intro-badge">XGBoost Supervised Classification</div>
+                    <h2>⚠️ Real-Time Order Profitability & Loss Predictor</h2>
+                    <p>Test incoming customer orders in real-time to predict whether an order will yield a financial loss (`Profit < 0`) based on Discount %, Sales, Quantity, Category, and Region.</p>
+                </div>
+
+                <div class="grid-2col mb-20">
+                    <!-- Prediction Form -->
+                    <div class="glass-card form-card">
+                        <h3><i class="fa-solid fa-sliders"></i> Input Order Parameters</h3>
+                        <form id="loss-predict-form" class="mt-15">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="inp-category">
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Office Supplies">Office Supplies</option>
+                                    <option value="Technology">Technology</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Sub-Category</label>
+                                <select id="inp-subcategory">
+                                    <option value="Tables">Tables</option>
+                                    <option value="Bookcases">Bookcases</option>
+                                    <option value="Chairs">Chairs</option>
+                                    <option value="Binders">Binders</option>
+                                    <option value="Phones">Phones</option>
+                                    <option value="Storage">Storage</option>
+                                    <option value="Furnishings">Furnishings</option>
+                                    <option value="Paper">Paper</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Discount Rate (%)</label>
+                                <input type="range" id="inp-discount" min="0" max="0.80" step="0.05" value="0.40">
+                                <span class="range-val" id="val-discount">40%</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Order Sales Value ($)</label>
+                                <input type="number" id="inp-sales" value="350" min="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="inp-quantity" value="4" min="1" max="50">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Region</label>
+                                <select id="inp-region">
+                                    <option value="Central">Central</option>
+                                    <option value="East">East</option>
+                                    <option value="South">South</option>
+                                    <option value="West">West</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Customer Segment</label>
+                                <select id="inp-segment">
+                                    <option value="Consumer">Consumer</option>
+                                    <option value="Corporate">Corporate</option>
+                                    <option value="Home Office">Home Office</option>
+                                </select>
+                            </div>
+
+                            <button type="button" id="btn-predict" class="btn-primary full-btn">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Predict Order Risk
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Prediction Result Display -->
+                    <div class="glass-card result-card">
+                        <h3><i class="fa-solid fa-microchip"></i> ML Inference Output</h3>
+                        
+                        <div class="result-placeholder" id="result-box">
+                            <div class="risk-badge" id="res-badge">Awaiting Prediction</div>
+                            <div class="gauge-container">
+                                <h1 class="risk-prob" id="res-prob">--%</h1>
+                                <p class="prob-label">Loss Probability</p>
+                            </div>
+                            <div class="recommendation-box" id="res-rec">
+                                Adjust discount sliders and click Predict to evaluate real-time financial loss risk.
+                            </div>
+                        </div>
+
+                        <div class="model-meta mt-20">
+                            <div class="meta-item">
+                                <span class="meta-label">Classifier Engine</span>
+                                <span class="meta-val">XGBoost (95.05% Accuracy)</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">ROC-AUC Metric</span>
+                                <span class="meta-val">0.9883</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Importances -->
+                <div class="chart-card glass-card">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-chart-column"></i> Top Drivers of Order Financial Loss (Feature Importance)</h3>
+                    </div>
+                    <div id="chart-feature-importance" class="chart-container"></div>
+                </div>
+            </section>
+
+            <!-- TAB 5: SQL & INSIGHTS -->
+            <section id="tab-sql" class="tab-page">
+                <div class="section-intro glass-card mb-20">
+                    <div class="intro-badge">SQL Query Repository</div>
+                    <h2><i class="fa-solid fa-database"></i> MySQL Database & SQL Analysis</h2>
+                    <p>Executing relational queries, date transformations, window functions, and profitability analysis in MySQL.</p>
+                </div>
+
+                <div class="sql-code-block glass-card mb-20">
+                    <div class="code-header">
+                        <span><i class="fa-solid fa-code"></i> e_commerce_sales.sql — Window Function YoY Growth Query</span>
+                    </div>
+                    <pre><code>/* Calculate Year-over-Year Sales Growth using Window Function LAG() */
+SELECT 
+    year,
+    total_sales,
+    LAG(total_sales) OVER (ORDER BY year) AS prev_year_sales,
+    ROUND(
+        ((total_sales - LAG(total_sales) OVER (ORDER BY year)) 
+        / LAG(total_sales) OVER (ORDER BY year)) * 100, 2
+    ) AS growth_percentage
+FROM (
+    SELECT 
+        YEAR(order_date_new) AS year,
+        SUM(sales) AS total_sales
+    FROM orders
+    GROUP BY year
+) t;</code></pre>
+                </div>
+
+                <div class="insights-grid">
+                    <div class="insight-card glass-card">
+                        <div class="insight-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                        <h3>Discount Impact Finding</h3>
+                        <p>Orders with discount rates exceeding 20% consistently generate negative net profit. High discounts on Tables (-$17.7k) and Bookcases (-$3.4k) erode profits from Technology.</p>
+                    </div>
+
+                    <div class="insight-card glass-card">
+                        <div class="insight-icon"><i class="fa-solid fa-trophy"></i></div>
+                        <h3>VIP Persona Retention</h3>
+                        <p>The top 269 Champions / VIP customers account for over $1.38M in total spend with an average purchase frequency of 8.8 orders.</p>
+                    </div>
+
+                    <div class="insight-card glass-card">
+                        <div class="insight-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <h3>ML Deployment Benefit</h3>
+                        <p>Deploying the XGBoost Loss Predictor at checkout flags loss-making orders with 93.1% precision, allowing discount controls before order finalization.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
